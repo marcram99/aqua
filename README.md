@@ -1,2 +1,2 @@
 # le-monde-aquatique
-petit jeu de logique
+version informatique d'un petit jeu de logique
