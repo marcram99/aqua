@@ -2,7 +2,7 @@
 
 """ interface en ligne de commandes pour jeu 'aqua' """
 while True:
-    ordre = input('?').split(' ')
+    ordre = input('Que veux tu faire ?').split(' ')
 
     if len(ordre) == 1:
         if ordre[0] == '':
