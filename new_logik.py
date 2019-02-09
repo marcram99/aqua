@@ -59,7 +59,7 @@ class Plateau():
         self.cache2 = Cache([0, 1, 0, 1, 1],'Cache 2')
         self.cache3 = Cache([0, 0, 1, 1, 1],'Cache 3')
         self.cache4 = Cache([0, 1, 1, 1, 0],'Cache 4')
-        self.pos_cache = ['pos1', 'pos2', 'pos3', 'pos4',]
+        self.animals = {x: 0 for x in Cadre.theme if x is not ''}
         self.board = {'c1': self.cadre1, 'c2': self.cadre2, 'c3': self.cadre3, 'c4': self.cadre4,'x1': self.cache1, 'x2': self.cache2, 'x3': self.cache3, 'x4': self.cache4}
         self.board_state = {'c1': [], 'c2': [], 'c3': [], 'c4': [], }
         self.liste_cache_dispo = ['x1', 'x2', 'x3', 'x4']
@@ -149,7 +149,7 @@ class Plateau():
                     print('>ADD: déjà {} sur {}'.format(self.board[self.board_state[cadre][0]].nom, self.board[cadre].nom))
                     self.enleve_cache(self.board_state[cadre][0])
                 self.board[cadre].mettre_cache(self.board[cache])
-                self.board_state[cadre] = [cache,self.pos_cache[0]]
+                self.board_state[cadre] = [cache,'pos1']
                 self.liste_cache_dispo.remove(cache)
                 print('>ADD: ajouté {} au {}'.format(self.board[cache].nom, self.board[cadre].nom))
 
