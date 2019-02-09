@@ -49,7 +49,7 @@ class Interpreteur():
         if ordre[0] == 'rot':
             jeu.rotation_cache(ordre[1].lower(), ordre[2].lower())
         if ordre[0] == 'infos':
-            jeu.informations('t')
+            jeu.informations('j')
         if ordre[0] == 'info':
             jeu.informations(ordre[1].lower())
 

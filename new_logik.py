@@ -63,6 +63,7 @@ class Plateau():
         self.board = {'c1': self.cadre1, 'c2': self.cadre2, 'c3': self.cadre3, 'c4': self.cadre4,'x1': self.cache1, 'x2': self.cache2, 'x3': self.cache3, 'x4': self.cache4}
         self.board_state = {'c1': [], 'c2': [], 'c3': [], 'c4': [], }
         self.liste_cache_dispo = ['x1', 'x2', 'x3', 'x4']
+        self.challenge = {"salamandre":0, "grenouille":5, "poisson":0, "lezard":0, "tortue":0}
 
     def term_affiche(self):
         print("+--------------+--------------+ +--------------+--------------+")
@@ -184,23 +185,34 @@ class Plateau():
 
 
     def rotation_cache(self, sens, cadre_cache):
+        def maj_info(sens,cadre):
+            pos_cache = ['pos1', 'pos2', 'pos3', 'pos4', ]
+            liste_cadre = [x for x in self.board_state if len(self.board_state[x]) != 0]
+            cadre = [x for x in liste_cadre if self.board_state[x][0] == cache][0]
+            pos = self.board_state[cadre][1]
+            indice = pos_cache.index(pos)
+            new_indice = (indice + sens) % 4
+            self.board_state[cadre][1] = pos_cache[new_indice]
+
         if cadre_cache not in self.board.keys():
             print(">{} n'est pas un cache/cadre valide".format(cadre_cache))
+        elif cadre_cache[:1] == 'c' and self.board_state[cadre_cache] == []:
+            print(">REM: il n'y a pas de cache sur le {}".format(self.board[cadre_cache].nom))
+        elif cadre_cache[:1] == 'x' and cadre_cache in self.liste_cache_dispo:
+            print(">REM: le {} n'est pas utilisé".format(self.board[cadre_cache].nom))
         else:
             if cadre_cache[:1] == 'x':
-                cache = self.board[cadre_cache]
-            if cadre_cache[:1] == 'c':
-                if self.board_state[cadre_cache] == []:
-                    print(">REM: il n'y a pas de cache sur le {}".format(self.board[cadre_cache].nom))
-                else:
-                    cache = self.board_state[cadre_cache][0]
+                cache = cadre_cache
+            elif cadre_cache[:1] == 'c':
+                cache = self.board_state[cadre_cache][0]
             if sens =='h':
                 print('>REM: tourné le {} en sens horaire'.format(self.board[cache].nom))
                 self.board[cache].rot_h()
-                #self.board_state[cache][1] = self.pos_cache
+                maj_info(1,cache)
             elif sens =='ah':
                 print('>REM: tourné le {} en sens anti-horaire'.format(self.board[cache].nom))
                 self.board[cache].rot_ah()
+                maj_info(-1, cache)
             else:
                 print(">REM: argument invalide pour sens")
 
