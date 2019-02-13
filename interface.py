@@ -1,14 +1,14 @@
 # -*-encoding:Utf-8 -*
-from new_logik import Cadre, Cache, Plateau
+from new_logik2 import Cadre, Cache, Plateau
 
 class Interpreteur():
     """ interface en ligne de commandes pour jeu 'aqua' """
     def __init__(self):
-        self.commandes = {'help': [1, "tu veux de l'aide","pas d'arguments nécéssaire à cette fonction"],
-                          'add': [3, 'tu veux ajouter un cache',"en arguments: cache (x1... x4) et cadre(c1... c4)"],
-                          'rem': [2, 'tu veux enlever un cache',"en arguments: le cache(x1... x4)"],
-                          'rot': [3, 'tu veux tourner un cache',"en arguments: le cache (x1... x4) et le sens de rotation ( H ou AH)"],
-                          'infos':[1, 'tu veux des infos',"pas d'arguments nécéssaire à cette fonction"],
+        self.commandes = {'help': [1, "tu veux de l'aide:","pas d'arguments nécéssaire à cette fonction"],
+                          'add': [3, 'tu veux ajouter un cache:',"en arguments: cache (x1... x4) et cadre(c1... c4)"],
+                          'rem': [2, 'tu veux enlever un cache:',"en arguments: le cache(x1... x4)"],
+                          'rot': [3, 'tu veux tourner un cache:',"en arguments: le cache (x1... x4) et le sens de rotation ( H ou AH)"],
+                          'infos':[1, 'tu veux des infos:',"pas d'arguments nécéssaire à cette fonction"],
                           'info': [2, 'tu veux des infos', " en argument: tout, cache, cadre "],
                          }
 
