@@ -9,7 +9,7 @@ class Interpreteur():
                           'rem': [2, 'tu veux enlever un cache:',"en arguments: le cache(x1... x4)"],
                           'rot': [3, 'tu veux tourner un cache:',"en arguments: le cache (x1... x4) et le sens de rotation ( H ou AH)"],
                           'infos':[1, 'tu veux des infos:',"pas d'arguments nécéssaire à cette fonction"],
-                          'info': [2, 'tu veux des infos', " en argument: tout, cache, cadre "],
+                          'info': [2, 'tu veux des infos:', " en argument: tout, cache, cadre "],
                          }
 
     def aide(self):

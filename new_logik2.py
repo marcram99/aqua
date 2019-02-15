@@ -1,5 +1,4 @@
 # -*-encoding:Utf-8 -*
-
 class Cadre():
     theme = ["", "salamandre", "grenouille", "poisson", "lezard", "tortue"]
     def __init__(self, liste, nom):
@@ -51,15 +50,36 @@ class Cache():
         print("+---+")
         print("Cache en {} sur le cadre {} ".format(self.pos, self.on_cadre))
 
-    def rot_h(self):
+    def rot_h(self, cadre):
+        if self.on_cadre != cadre.nom:
+            raise Exception("Ce cache({}) n'est pas sur ce cadre!(devrait être: {})".format(self.on_cadre, cadre.nom))
         i = Cache.positions.index(self.pos)
         self.pos = Cache.positions[(i + 1) % 4]
         self.cache_current = [self.cache_current[3], self.cache_current[0], self.cache_current[2], self.cache_current[4], self.cache_current[1]]
+        cadre.cadre_current = cadre.cadre_init
+        cadre.cadre_current = [cadre.cadre_current[x] if not self.cache_current[x] else ('*****') for x in range(5)]
 
-    def rot_ah(self):
+    def rot_ah(self, cadre):
         i = Cache.positions.index(self.pos)
         self.pos = Cache.positions[(i - 1) % 4]
         self.cache_current = [self.cache_current[3], self.cache_current[0], self.cache_current[2], self.cache_current[4], self.cache_current[1]]
+        cadre.cadre_current = cadre.cadre_init
+        cadre.cadre_current = [cadre.cadre_current[x] if not self.cache_current[x] else ('*****') for x in range(5)]
+
+class Animo():
+    def __init__(self,nom, board):
+        self.animo_init = {x: 0 for x in Cadre.theme if x is not ''}
+        self.animo = {x: y for x,y in self.animo_init.items()}
+        self.board = board
+
+    def check(self):
+        l_cadres = [self.board[x] for x in self.board.keys() if x[0] == 'c']
+        self.animo = {x: y for x, y in self.animo_init.items()}
+        for l_animo in l_cadres:
+            for animal in l_animo.cadre_current:
+                if animal in self.animo:
+                    self.animo[animal] += 1
+
 
 class Plateau():
     def __init__(self):
@@ -80,6 +100,8 @@ class Plateau():
                       self.cache3.nom: self.cache3,
                       self.cache4.nom: self.cache4,
                       }
+        self.animals = Animo('a0', self.board)
+
     def term_affiche(self):
         print("+--------------+--------------+ +--------------+--------------+")
         print("|{:^14}|{:^14}| |{:^14}|{:^14}|".format(self.cadre1.cadre_current[0], self.cadre1.cadre_current[1], self.cadre2.cadre_current[0], self.cadre2.cadre_current[1]))
@@ -153,16 +175,18 @@ class Plateau():
         elif cadre_cache[:1] == 'x' and self.board[cadre_cache].on_cadre is None:
             print(">REM: le {} n'est pas utilisé".format(self.board[cadre_cache].nom))
         else:
-            if cadre_cache[0] == 'x':
+            if cadre_cache[0] == 'c':
                 cadre = self.board[cadre_cache]
+                cache = self.board[self.board[cadre_cache].cache_on]
             else:
-                cadre = self.board[self.board[cadre_cache].cache_on]
+                cadre = self.board[self.board[cadre_cache].on_cadre]
+                cache = self.board[cadre_cache]
             if sens =='h':
                 print('>REM: tourné le {} en sens horaire'.format(self.board[cadre_cache].nom))
-                cadre.rot_h()
+                cache.rot_h(cadre)
             elif sens =='ah':
                 print('>REM: tourné le {} en sens anti-horaire'.format(self.board[cadre_cache].nom))
-                cadre.rot_ah()
+                cache.rot_ah(cadre)
             else:
                 print(">REM: argument invalide pour sens")
 
@@ -186,14 +210,18 @@ class Plateau():
     def info_caches(self):
         caches = [self.board[x] for x in self.board.keys() if self.board[x].nom[0] == 'x' ]
         dispo = ''
-        long = 0
+        sep = 0
+        print('+--------------------------+')
         for elem in caches:
             if elem.on_cadre is None:
                 dispo += elem.nom + ' '
-                long += 1
-        print('+--------' + long * (3 * '-') + '+')
-        print('| dispo: {}|'.format(dispo))
-        print('+--------' + long * (3 * '-') + '+')
+            else:
+                print("| cache {} en  {} sur {} |".format(elem.nom, elem.pos, elem.on_cadre))
+                sep = 1
+        if sep != 0:
+            print('| ------------------------ |')
+        print('| disponible : {:<12}|'.format(dispo))
+        print('+--------------------------+')
 
     def info_cadres(self):
         cadres = [self.board[x] for x in self.board.keys() if self.board[x].nom[0] == 'c']
@@ -206,12 +234,21 @@ class Plateau():
             print("|{}: {} |".format(elem.nom, info))
 
         print('+-------------------------+')
+
+    def info_animo(self):
+        self.animals.check()
+        print('+----------------+')
+        for key, val in self.animals.animo.items():
+            print('| {:<10} : {} |'.format(key, val))
+        print('+----------------+')
+
+
+
+
 if __name__ == '__main__':
     jeu = Plateau()
-    jeu.ajoute_cache('x1', 'c1')
-    jeu.term_affiche()
-    jeu.ajoute_cache('x2', 'c1')
-    jeu.term_affiche()
-    jeu.ajoute_cache('c2', 'x1')
+    #jeu.ajoute_cache('x1', 'c1')
+    #jeu.ajoute_cache('c2', 'x1')
+    jeu.animals.check()
 
 

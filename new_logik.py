@@ -1,46 +1,3 @@
-# -*-encoding:Utf-8 -*
-
-class Cadre():
-    theme = ["", "salamandre", "grenouille", "poisson", "lezard", "tortue"]
-    def __init__(self, liste, nom):
-        self.nom = nom
-        self.liste_init = [Cadre.theme[x] for x in liste]
-        self.liste_current = self.liste_init[:]
-        self.cache_on = None
-        #self.term_affiche()
-
-    def term_affiche(self, titre=" "):
-        print(titre)
-        print("+--------------+--------------+")
-        print("|{:^14}|{:^14}|".format(self.liste_current[0], self.liste_current[1]))
-        print("|--------------+--------------|")
-        print("|{:^29}|".format(self.liste_current[2]))
-        print("|--------------+--------------|")
-        print("|{:^14}|{:^14}|".format(self.liste_current[3], self.liste_current[4]))
-        print("+--------------+--------------+")
-        if self.cache_on is not None:
-            print("{} sur le cadre".format(self.cache_on))
-
-    def mettre_cache(self,cache):
-        self.liste_current =[self.liste_current[x] if not cache.liste_current[x] else ('*****') for x in range(5)]
-        self.cache_on = cache.nom
-        #self.term_affiche()
-
-    def enleve_cache(self):
-        self.liste_current = self.liste_init
-        self.cache_on = None
-
-
-class Cache():
-    positions = ['pos1', 'pos2', 'pos3', 'pos4', ]
-    def __init__(self, liste, nom):
-        self.nom = nom
-        self.used = False
-        self.pos = Cache.positions[0]
-        self.liste_init = liste
-        self.liste_current = self.liste_init[:]
-        #self.term_affiche()
-
     def term_affiche(self):
         print (self.pos)
         print("+---+")
@@ -48,19 +5,6 @@ class Cache():
         print('| {} |'.format(self.liste_current[2]))
         print('|{} {}|'.format(self.liste_current[3], self.liste_current[4]))
         print("+---+")
-
-    def rot_h(self):
-        i = Cache.positions.index(self.pos)
-        self.pos = Cache.positions[(i + 1) % 4]
-        self.liste_current = [self.liste_current[3], self.liste_current[0], self.liste_current[2], self.liste_current[4], self.liste_current[1]]
-        #self.term_affiche()
-
-    def rot_ah(self):
-        i = Cache.positions.index(self.pos)
-        self.pos = Cache.positions[(i - 1) % 4]
-        self.liste_current = [self.liste_current[1], self.liste_current[4], self.liste_current[2], self.liste_current[0], self.liste_current[3]]
-        #self.term_affiche()
-
 
 class Plateau():
     def __init__(self):
@@ -155,122 +99,7 @@ class Plateau():
             print('| {:<10} : {} |'.format(key, val))
         print('+----------------+')
 
-    def ajoute_cache(self, *args):
-        if args[0] not in self.board.keys():
-            print(">{} n'est pas un cache/cadre valide".format(args[0]))
-        if args[1] not in self.board.keys():
-            print(">{} n'est pas un cache/cadre valide".format(args[1]))
-        else:
-            if args[0][0]=='x':
-                cache = args[0]
-                cadre = args[1]
-            else:
-                cache = args[1]
-                cadre = args[0]
 
-            if self.board[cache].used:
-                print('cache pas dispo')
-
-            elif self.board[cadre].cache_on is not None:
-                self.board[cadre].enleve_cache()
-                self.board[cadre].mettre_cache(cache)
-            else:
-                self.board[cadre].mettre_cache(cache)
-            """if cache in self.liste_cache_dispo:
-                if len(self.board_state[cadre]) != 0:
-                    print('>ADD: déjà {} sur {}'.format(self.board[self.board_state[cadre][0]].nom, self.board[cadre].nom))
-                    self.enleve_cache(self.board_state[cadre][0])
-                self.board[cadre].mettre_cache(self.board[cache])
-                self.board_state[cadre] = [cache,'pos1']
-                self.liste_cache_dispo.remove(cache)
-                print('>ADD: ajouté {} au {}'.format(self.board[cache].nom, self.board[cadre].nom))
-
-
-            else:
-                print("ADD: Le {} n'est pas disponible".format(self.board[cache].nom))"""
-
-    def enleve_cache(self, args):
-        if args not in self.board.keys():
-            print(">{} n'est pas un cache/cadre valide".format(args[0]))
-        else:
-            if args[:1]=='x':
-                cache = args
-                if cache in self.liste_cache_dispo:
-                    print(">REM: Le {} n'est pas utilisé...".format(self.board[cache].nom))
-                else:
-                    liste_cadre = [x for x in self.board_state if len(self.board_state[x]) != 0]
-                    cadre = [x for x in liste_cadre if self.board_state[x][0] == cache][0]
-                    print('>REM: {} enlevé du {}'.format(self.board[cache].nom,self.board[cadre].nom))
-                    self.board[cadre].enleve_cache()
-                    self.liste_cache_dispo.append(cache)
-                    self.board_state[cadre] = []
-            if args[:1]=='c':
-                cadre = args
-                if self.board_state[cadre] == []:
-                    print(">REM: il n'y a pas de cache sur le {}".format(self.board[cadre].nom))
-                else:
-                    cache = self.board_state[cadre][0]
-                    print('>REM: {} enlevé du {}'.format(self.board[cache].nom, self.board[cadre].nom))
-                    self.board[cadre].enleve_cache()
-                    self.liste_cache_dispo.append(cache)
-                    self.board_state[cadre] = []
-
-
-    def rotation_cache(self, sens, cadre_cache):
-        def maj_info(sens,cadre):
-            pos_cache = ['pos1', 'pos2', 'pos3', 'pos4', ]
-            liste_cadre = [x for x in self.board_state if len(self.board_state[x]) != 0]
-            cadre = [x for x in liste_cadre if self.board_state[x][0] == cache][0]
-            pos = self.board_state[cadre][1]
-            indice = pos_cache.index(pos)
-            new_indice = (indice + sens) % 4
-            self.board_state[cadre][1] = pos_cache[new_indice]
-
-        if cadre_cache not in self.board.keys():
-            print(">{} n'est pas un cache/cadre valide".format(cadre_cache))
-        elif cadre_cache[:1] == 'c' and self.board_state[cadre_cache] == []:
-            print(">REM: il n'y a pas de cache sur le {}".format(self.board[cadre_cache].nom))
-        elif cadre_cache[:1] == 'x' and cadre_cache in self.liste_cache_dispo:
-            print(">REM: le {} n'est pas utilisé".format(self.board[cadre_cache].nom))
-        else:
-            if cadre_cache[:1] == 'x':
-                cache = cadre_cache
-            elif cadre_cache[:1] == 'c':
-                cache = self.board_state[cadre_cache][0]
-            if sens =='h':
-                print('>REM: tourné le {} en sens horaire'.format(self.board[cache].nom))
-                self.board[cache].rot_h()
-                maj_info(1,cache)
-            elif sens =='ah':
-                print('>REM: tourné le {} en sens anti-horaire'.format(self.board[cache].nom))
-                self.board[cache].rot_ah()
-                maj_info(-1, cache)
-            else:
-                print(">REM: argument invalide pour sens")
-
-if __name__ == '__main__':
-    jeu = Plateau()
-    jeu.ajoute_cache('x1', 'c1')
-    jeu.board['c1'].term_affiche()
-    jeu.board['x1'].term_affiche()
-    jeu.board['x1'].rot_ah()
-    jeu.board['x1'].term_affiche()
-    jeu.board['x1'].rot_ah()
-    jeu.board['x1'].term_affiche()
-    jeu.board['x1'].rot_ah()
-    jeu.board['x1'].term_affiche()
-    jeu.board['x1'].rot_ah()
-    jeu.board['x1'].term_affiche()
-    jeu.board['x1'].rot_ah()
-    jeu.board['x1'].term_affiche()
-    jeu.info_caches()
-
-    #jeu.ajoute_cache('x2', 'c2')
-    #jeu.ajoute_cache('x3', 'c3')
-    #jeu.ajoute_cache('x4', 'c4')
-    #jeu.enleve_cache('x1')
-    #jeu.enleve_cache('x4')
-    #jeu.term_affiche()
 
 
 
