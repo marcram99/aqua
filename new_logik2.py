@@ -60,16 +60,19 @@ class Cache():
         cadre.cadre_current = [cadre.cadre_current[x] if not self.cache_current[x] else ('*****') for x in range(5)]
 
     def rot_ah(self, cadre):
+        if self.on_cadre != cadre.nom:
+            raise Exception("Ce cache({}) n'est pas sur ce cadre!(devrait être: {})".format(self.on_cadre, cadre.nom))
         i = Cache.positions.index(self.pos)
         self.pos = Cache.positions[(i - 1) % 4]
-        self.cache_current = [self.cache_current[3], self.cache_current[0], self.cache_current[2], self.cache_current[4], self.cache_current[1]]
+        self.cache_current = [self.cache_current[1], self.cache_current[4], self.cache_current[2], self.cache_current[0], self.cache_current[3]]
         cadre.cadre_current = cadre.cadre_init
         cadre.cadre_current = [cadre.cadre_current[x] if not self.cache_current[x] else ('*****') for x in range(5)]
 
 class Animo():
-    def __init__(self,nom, board):
+    def __init__(self, board):
         self.animo_init = {x: 0 for x in Cadre.theme if x is not ''}
         self.animo = {x: y for x,y in self.animo_init.items()}
+        print(board)
         self.board = board
 
     def check(self):
@@ -100,7 +103,8 @@ class Plateau():
                       self.cache3.nom: self.cache3,
                       self.cache4.nom: self.cache4,
                       }
-        self.animals = Animo('a0', self.board)
+        self.ani_board = Animo(self.board)
+        self.challenge = Animo('bonjour')
 
     def term_affiche(self):
         print("+--------------+--------------+ +--------------+--------------+")
@@ -236,9 +240,9 @@ class Plateau():
         print('+-------------------------+')
 
     def info_animo(self):
-        self.animals.check()
+        self.ani_board.check()
         print('+----------------+')
-        for key, val in self.animals.animo.items():
+        for key, val in self.ani_board.animo.items():
             print('| {:<10} : {} |'.format(key, val))
         print('+----------------+')
 
@@ -247,6 +251,8 @@ class Plateau():
 
 if __name__ == '__main__':
     jeu = Plateau()
+    challenge01 = {x: 0 for x in Cadre.theme if x is not ''}
+    challenge01['grenouille'] = 5
     #jeu.ajoute_cache('x1', 'c1')
     #jeu.ajoute_cache('c2', 'x1')
     jeu.animals.check()

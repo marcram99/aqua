@@ -56,6 +56,8 @@ class Interpreteur():
 
 if __name__ == '__main__':
     jeu = Plateau()
+    challenge01 = {x: 0 for x in Cadre.theme if x is not ''}
+    challenge01['grenouille'] = 5
     i = Interpreteur()
 
     while True:
