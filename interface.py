@@ -13,7 +13,16 @@ class Interpreteur():
                          }
 
     def aide(self):
-        print("ceci est l'aide du jeu de la fonction")
+        print()
+        print(" pour des infos détaillées: INFO arg        avec arg = A(animaux) C(cadre) X(cache)  J(plateau jeux)")
+        print()
+        print(" pour ajouter un cache:     ADD arg1 arg2   avec arg = X1..X4 pour caches, C1..C4 pour cadres")
+        print()
+        print(" pour enlever un cache:     REM arg         avec arg = X1..X4 pour caches, C1..C4 pour cadres")
+        print()
+        print(" pour tourner un cache:     ROT arg1 arg2   avec arg = X1..X4 pour caches, C1..C4 pour cadres")
+        print("                                            avec arg H (horraire) ou AH (anti-horraire) pour sens")
+
 
     def check_valide(self, ordre):
         demande = [x for x in ordre if x != '' ]

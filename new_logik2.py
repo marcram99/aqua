@@ -6,6 +6,7 @@ class Cadre():
         self.cadre_init = [Cadre.theme[x] for x in liste]
         self.cadre_current = self.cadre_init[:]
         self.cache_on = None
+        self.animal_count = Animo(self.nom, self.cadre_current)
 
 
     def t_affiche(self):
@@ -68,20 +69,45 @@ class Cache():
         cadre.cadre_current = cadre.cadre_init
         cadre.cadre_current = [cadre.cadre_current[x] if not self.cache_current[x] else ('*****') for x in range(5)]
 
-class Animo():
-    def __init__(self, board):
-        self.animo_init = {x: 0 for x in Cadre.theme if x is not ''}
-        self.animo = {x: y for x,y in self.animo_init.items()}
-        print(board)
-        self.board = board
 
-    def check(self):
-        l_cadres = [self.board[x] for x in self.board.keys() if x[0] == 'c']
+class Animo():
+    def __init__(self, nom, target):
+        self.nom = nom
+        self.target = target
+        self.animo_init = {x: 0 for x in Cadre.theme if x is not ''}
         self.animo = {x: y for x, y in self.animo_init.items()}
-        for l_animo in l_cadres:
-            for animal in l_animo.cadre_current:
-                if animal in self.animo:
-                    self.animo[animal] += 1
+        
+        if type(self.target) == dict:
+            if 'c1' not in self.target.keys():
+                for key in self.target:
+                    if key in self.animo.keys():
+                        self.animo[key] = self.target[key]
+                self.affiche()
+            else:
+                ani_board = [y.cadre_current for x, y in self.target.items() if x in ['c1', 'c2', 'c3', 'c4']]
+                for cadre in ani_board:
+                    for elem in cadre:
+                        if elem in self.animo:
+                            self.animo[elem] += 1
+                    self.nom = 'ani_board'
+                    self.affiche()
+        elif type(self.target) == list:
+            for elem in target:
+                if elem in self.animo:
+                    self.animo[elem] +=  1
+            self.affiche()
+
+    def update(self):
+        pass
+
+
+
+    def affiche(self):
+        print(self.nom)
+        print('+----------------+')
+        for key, val in self.animo.items():
+            print('| {:<10} : {} |'.format(key, val))
+        print('+----------------+')
 
 
 class Plateau():
@@ -103,8 +129,8 @@ class Plateau():
                       self.cache3.nom: self.cache3,
                       self.cache4.nom: self.cache4,
                       }
-        self.ani_board = Animo(self.board)
-        self.challenge = Animo('bonjour')
+        self.ani_board = Animo("ani_board", self.board)
+        self.challenge01 = Animo("challenge 01", {"grenouille":5, "poisson":2})
 
     def term_affiche(self):
         print("+--------------+--------------+ +--------------+--------------+")
@@ -251,10 +277,11 @@ class Plateau():
 
 if __name__ == '__main__':
     jeu = Plateau()
-    challenge01 = {x: 0 for x in Cadre.theme if x is not ''}
-    challenge01['grenouille'] = 5
+
+
+
     #jeu.ajoute_cache('x1', 'c1')
     #jeu.ajoute_cache('c2', 'x1')
-    jeu.animals.check()
+
 
 
